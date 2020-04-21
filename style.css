@@ -1,6 +1,8 @@
 body {
 
     background: #352F5B;
+    color: #fff; 
+    /* this line need to remove it */
 }
 
 .container{

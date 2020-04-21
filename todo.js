@@ -8,34 +8,33 @@ const search = document.querySelector('.search input');
 gPop.style.display = "none";
 
 
+
 /***************reusable function********************/
 
 /* Function pour l'alert et le popup qui va etre afficher (time control)*/
-function start(duree)
-{
-var o=document.getElementById("sp");
-if(duree > 0)
-{
-o.innerHTML = duree;
-gPop.style.display = "block";
-setTimeout("start("+duree+" -1)", 1000);
-}
-else
-{
-   alert("enter a valid to do");
-o.innerHTML ="Au revoir";
-gPop.style.display="none";
-popup.style.visibility ="hidden";
+function start(duree) {
+   var o = document.getElementById("sp");
+   if (duree > 0) {
+      o.innerHTML = duree;
+      gPop.style.display = "block";
+      setTimeout("start(" + duree + " -1)", 1000);
+   }
+   else {
+      alert("enter a valid to do");
+      o.innerHTML = "Au revoir";
+      gPop.style.display = "none";
+      // popup.style.visibility = "hidden";
 
-}};
+   }
+};
 
 
 /* Function Creation dynamique du POPUP */
 
-function create(){
+function create() {
    const div = document.createElement('div');
    div.classList.add('popup-close');
-   div.setAttribute('id','closing');
+   div.setAttribute('id', 'closing');
    const text = document.createTextNode('X');
    div.appendChild(text);
    popup.append(div);
@@ -46,20 +45,19 @@ function create(){
    <h2>Fill the Input</h2>
    <p>Don't forget</p>
    <a href="#">Return</a>`;
-   div2.innerHTML=html;
-   popup.append(div2); 
-   
+   div2.innerHTML = html;
+   popup.append(div2);
 }
 
 /* Function generation dynamique des TODOS */
 
-const generateTemp = todo =>{
+const generateTemp = todo => {
    const html = `
    <li class="list-group-item d-flex justify-content-between align-items-center">
              <span>${todo}</span>
              <i class="fas fa-trash delete"></i>
             </li>
-   `;  
+   `;
    list.innerHTML += html;
 };
 
@@ -67,21 +65,21 @@ const generateTemp = todo =>{
 /* function pour controller l'evenement et pour ne pas etre repeté à chaque clique */
 function onetime(node, type, callback) {
 
-	node.addEventListener(type, function(e) {
-	
-		e.target.removeEventListener(e.type, arguments.callee);
+   node.addEventListener(type, function (e) {
 
-		return callback(e);
-	});
+      e.target.removeEventListener(e.type, arguments.callee);
+
+      return callback(e);
+   });
 }
 
-onetime(gPop,'click',handler);
+onetime(gPop, 'click', handler);
 
-    function handler(e){
-         
-      if(e.target.id='closing'){
-   
-         gPop.style.display ="none";
+function handler(e) {
+
+   if (e.target.id = 'closing') {
+
+      gPop.style.display = "none";
    }
 }
 
@@ -91,11 +89,20 @@ onetime(gPop,'click',handler);
 
 
 /************* Adding TO DO**************/
-
+// create the popup 
+list.children
 //Eventlistner Add TODOS
-btn.addEventListener('click',e =>{
- 
-  
+btn.addEventListener('click', e => {
+   let val = addForm.elements["add"].value.trim();
+   if (val) {
+      generateTemp(val);
+      addForm.elements["add"].value = "";
+   } else {
+      popup.innerHTML = "";
+      create();
+      start(3);
+   }
+   e.preventDefault();
 });
 
 /************* Fin Adding TO DO**************/
@@ -103,8 +110,10 @@ btn.addEventListener('click',e =>{
 
 
 /*************Deleting  TO DO**************/
-list.addEventListener('click',e =>{
-
+list.addEventListener('click', e => {
+   if (e.target.matches(".delete")) {
+      list.removeChild(e.target.parentNode);
+   }
 });
 
 /************* Fin Deleting  TO DO**************/
@@ -121,16 +130,24 @@ list.addEventListener('click',e =>{
 
 
 
-const retrieve = (term) =>{
+const retrieve = (term) => {
 
    //function pour faire un filtre i
-};  
+   // let arr = Array.from(list.children)
+   for (let i = 0; i < list.children.length; i++) {
+      if (list.children[i].textContent.toLowerCase().includes(term)) {
+         list.children[i].classList.remove("filtre");
+      } else {
+         list.children[i].classList.add("filtre");
+      }
+   }
+};
 
 
 //evenement de recherche des mots clés 
-search.addEventListener('keyup', () =>{
-  
-
+search.addEventListener('keyup', (e) => {
+   retrieve(search.value.toLowerCase());
+   e.preventDefault();
 })
 
 /*************************************Fin SEARCH ITEM********************************************/
